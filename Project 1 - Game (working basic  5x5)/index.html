@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vernon's Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="board"></div>
+
+    <div id="die" class="die"></div>
+    <button id="rollButton">Roll</button>
+    <button id="restartButton">Restart</button>
+    <div id="playerStats">
+      <p>Health: <span id="playerHealth">100</span></p>
+      <p>Damage: <span id="playerDamage">10</span></p>
+      <p>Health Potions: <span id="healthPotions">0</span></p>
+      <button id="usePotionButton" class="button">Use Potion</button>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal">
+        <p id="eventText"></p>
+        <div class="modal-buttons">
+          <button id="nextButton" class="button hide">Next</button>
+          <button id="closeModalButton" class="button hide">Close</button>
+          <button id="yesButton" class="button hide">Yes</button>
+          <button id="noButton" class="button hide">No</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
