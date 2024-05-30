@@ -252,35 +252,38 @@
     showModal("No potions available!");
     }
     }
-
-      // Use a stored health potion
-      function usePotion() {
-      playerHealth = Math.min(playerHealth + 10, 100);
-      healthPotions--;
-      document.getElementById("playerHealth").innerText = playerHealth;
-      document.getElementById("healthPotions").innerText = healthPotions;
-      showModal("Health restored by 10.");
-      }
-
-      // Confirm use of potion
-      function confirmUsePotion() {
-      if (healthPotions > 0) {
-      if (playerHealth < 100) {
-      showModalWithYesNo("Use Potion?", usePotion, keepPotion);
-      } else {
-      showModal("You are at full health and cannot use the potion.");
-      }
-      } else {
-      showModal("No potions available!");
-      }
-      }
-
-      // Keep the potion and close modal
-      function keepPotion() {
-      showModal("You kept the potion back.");
-      }
-
     ```
+
+  // Use a stored health potion
+  function usePotion() {
+  playerHealth = Math.min(playerHealth + 10, 100);
+  healthPotions--;
+  document.getElementById("playerHealth").innerText = playerHealth;
+  document.getElementById("healthPotions").innerText = healthPotions;
+  showModal("Health restored by 10.");
+  }
+
+  // Confirm use of potion
+  function confirmUsePotion() {
+  if (healthPotions > 0) {
+  if (playerHealth < 100) {
+  showModalWithYesNo("Use Potion?", usePotion, keepPotion);
+  } else {
+  showModal("You are at full health and cannot use the potion.");
+  }
+  } else {
+  showModal("No potions available!");
+  }
+  }
+
+  // Keep the potion and close modal
+  function keepPotion() {
+  showModal("You kept the potion back.");
+  }
+
+  ```
+
+  ```
 
 ## Player stats
 
