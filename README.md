@@ -224,35 +224,6 @@
   ````
   switch (event) {
     case "Enemy":
-      // Ensure enemy health is within the desired range (5 to 20)
-      const enemyStartingHealth = Math.floor(Math.random() * (15 - 5 + 1)) + 5; // Random between 5 and 20 (inclusive)
-      const enemy = { health: enemyStartingHealth, damage: 5 };
-
-      // Show encounter message using modal with Next button for combat logic
-      showModalWithNext("You have encountered a monster!", handleCombatLogic);
-
-      function handleCombatLogic() {
-        // Combat logic
-        const playerAttack = playerDamage; // Get player attack value
-        const enemyAttack = enemy.damage;
-
-        // Ensure enemy health doesn't go negative before comparison (clamped to minimum of 0)
-        enemy.health = Math.max(enemy.health - playerAttack, 0); // Enemy takes damage
-
-        // Check who is stronger and show messages accordingly
-        if (playerAttack > enemyStartingHealth) {
-          showModal("You are stronger and defeated the monster!");
-          // Add reward logic (optional)
-        } else {
-          // Player takes damage, update health, and display updated value
-          playerHealth = Math.max(playerHealth - enemyAttack, 0);
-          document.getElementById("playerHealth").innerText = playerHealth; // Update UI directly
-          showModal(
-            `The monster attacks you! Your health is now ${playerHealth}`
-          );
-        }
-      }
-      break;
     case "HealthPotion":
       if (playerHealth < 100) {
         playerHealth = Math.min(playerHealth + 10, 100); // Heal by 10, capped at 100
@@ -266,6 +237,7 @@
       break;
       ```
   - I find this to make my code neat instead of creating individual functions for each event
+
   ````
 
 - Potions and healing
