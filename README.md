@@ -221,24 +221,23 @@
   - As i wanted many events, I needed a way to write each event out in without other events affecting it. I also needed the getRandomEvent to be able to call each event independently. Thats how I found out about Switch Case
   - Switch allows me to create as many case (or events) i want and in each case, I can write their individual logic.
 
-  ````
+  ```
   switch (event) {
-    case "Enemy":
-    case "HealthPotion":
-      if (playerHealth < 100) {
+     case "Enemy":
+     case "HealthPotion":
+        if (playerHealth < 100) {
         playerHealth = Math.min(playerHealth + 10, 100); // Heal by 10, capped at 100
         document.getElementById("playerHealth").innerText = playerHealth;
         showModal("Found a health potion! Health restored by 10.");
-      } else {
+        } else {
         healthPotions++; // Store the potion if health is full
         document.getElementById("healthPotions").innerText = healthPotions;
         showModal("Found a health potion! Saved for later use.");
-      }
-      break;
-      ```
-  - I find this to make my code neat instead of creating individual functions for each event
+        }
+        break;
+  ```
 
-  ````
+  - I find this to make my code neat instead of creating individual functions for each event
 
 - Potions and healing
 
