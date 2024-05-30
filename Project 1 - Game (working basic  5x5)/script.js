@@ -99,6 +99,7 @@ let currentHighlightedPosition = 0; // Keep track of the currently highlighted p
 const finishSquareIndex = 15; // Finish square
 
 function rollDie() {
+  rollButton.removeEventListener("click", rollDie);
   const rollResult = Math.floor(Math.random() * 6) + 1; // Generate a random number between 1 and 6
   const die = document.getElementById("die");
 
@@ -177,6 +178,7 @@ function highlightSequence(startPosition, finalPosition) {
       setTimeout(() => {
         // Delay to ensure highlighting is complete
         handlePlayerPosition(finalPosition);
+        rollButton.addEventListener("click", rollDie);
 
         // Check if the player has reached or passed the FINISH square
         if (finalPosition >= finishSquareIndex) {
@@ -265,9 +267,9 @@ function restartGame() {
 function getRandomEvent() {
   const events = [
     "Enemy", // Encounter an enemy
-    //"HealthPotion", // Find a health potion
+    "HealthPotion", // Find a health potion
     // "Shop", // Visit a shop
-    // "Trap", // Fall into a trap
+    "Trap", // Fall into a trap
     "Loot", // Finds Loot (currently just weapon)
     // "DefaultEvent", // Placeholder for a neutral event (optional)
   ];
