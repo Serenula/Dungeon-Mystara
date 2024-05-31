@@ -4,15 +4,38 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: white;
+  color: black;
+  /* background-color: black; */
 }
 
-#board {
+/* Container styles */
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Interaction space styles */
+.interaction-space {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* padding: 10px; */
+  border-right: 1px solid black;
+  color: white;
+}
+
+/* Grid styles */
+.grid {
+  width: 75%;
   display: grid;
-  grid-template-columns: repeat(5, 100px);
-  grid-template-rows: repeat(5, 100px);
-  gap: 2px;
-  border: 2px solid grey;
+  grid-template-columns: repeat(var(--grid-columns, 5), 1fr);
+  grid-template-rows: repeat(var(--grid-rows, 5), 1fr);
+  gap: 5px;
+  /* padding: 10px; */
+  background-image: url("board.png");
+  transition: grid-template-columns 0.5s, grid-template-rows 0.5s;
 }
 
 .square {
@@ -22,45 +45,49 @@ body {
   font-size: 14px;
   color: white;
   border: 1px solid black;
+  box-sizing: border-box;
 }
 
 /* Colours for certain tiles */
 
 .dirt-brown {
-  background-color: #8b4513;
-}
-
-.sand {
-  background-color: #c2b280;
+  background-image: url("tile1.jpg");
+  background-size: cover;
+  filter: brightness(50%);
 }
 
 .gravel-grey {
-  background-color: #808080;
+  background-image: url("start.png");
+  background-size: cover;
 }
 
-.green {
-  background-color: green;
+.finishImage {
+  background-image: url("finish.png");
+  background-size: contain;
 }
 
 /* end of colours */
 
-/* start on roll and effects*/
+/* Roll button styles */
 #rollButton {
-  position: absolute;
-  top: calc(50% - 100px);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 10px 30px;
-  font-size: 16px;
-  background-color: black;
-  color: burlywood;
+  background-color: blue;
   border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 16px;
+  margin: 10px; /* Add some margin around */
   cursor: pointer;
   border-radius: 10px;
 }
 
+#rollButton:hover {
+  background-color: darkblue;
+}
 .highlight {
-  background-color: yellow;
+  background-image: url("tile1.jpg");
+  background-size: cover;
+  z-index: 1;
 }
 
 .highlight-border {
@@ -68,17 +95,28 @@ body {
 }
 /* End of roll and effects */
 
+/* Stats section styles */
+.stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensure even spacing */
+  align-items: center; /* Center items horizontally */
+  padding: 10px;
+  color: white;
+  background-image: url("tileno.jpg");
+}
+
 /* start of Di(c)e */
 .die {
-  position: absolute;
-  top: calc(50% + 5px); /* Position the die below the button */
-  left: 50%;
-  transform: translate(-50%, -50%); /* Center horizontally and vertically */
   width: 80px; /* Set the width */
   height: 80px; /* Set the height */
   background-color: #fff;
   border: 2px solid #333;
   border-radius: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .die-dot {
@@ -103,19 +141,15 @@ body {
 }
 /* End of Di(c)e */
 
-/* Restart Button*/
-
+/* Restart button styles */
 #restartButton {
-  position: absolute;
-  top: calc(50% + 80px);
   background-color: green;
   border: none;
   color: white;
-  padding: 15px 20px;
+  padding: 10px 20px;
   text-align: center;
-  display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin: 10px; /* Add some margin around */
   cursor: pointer;
   border-radius: 10px;
 }
@@ -123,64 +157,170 @@ body {
 #restartButton:hover {
   background-color: darkgreen;
 }
-
+/* Player stats section */
 #playerStats {
-  position: absolute;
-  top: calc(65% + 200px);
-  left: 50%;
-  transform: translate(-50%, -50%);
   text-align: center;
 }
 
 #playerStats p {
   margin: 5px 0;
   font-size: 16px;
-}
-
-/* Overlay start*/
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Overlay content */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-}
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
-.modal-buttons {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
 }
-.button {
+
+#healthPotionImage {
+  width: 30px; /* Adjust width as needed */
+  height: auto; /* Maintain aspect ratio */
+  margin-right: 5px; /* Add some right margin for spacing */
+}
+
+#healthPotions {
+  vertical-align: middle; /* Align with image */
+}
+
+/* Use Potion Button Styles */
+#usePotionButton {
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 10px; /* Add some top margin for spacing */
+  margin-left: auto; /* Center the button horizontally */
+  margin-right: auto; /* Center the button horizontally */
+  display: block; /* Ensure it behaves as a block element */
+}
+
+#usePotionButton:hover {
+  background-color: #0056b3; /* Darker shade of blue on hover */
+}
+
+/* Modal overlay styles */
+
+.overlay {
+  display: none; /* Initially hidden */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Ensure it's below modal but above other content */
+}
+
+/* Full screen overlay styles */
+#overlay {
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+#modalOverlay {
+  flex: 3;
+  display: hidden;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  border-bottom: 1px solid black;
+  position: relative;
+}
+
+/* Modal content styles */
+.modal {
+  position: relative;
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.modal-image {
+  max-width: 100%;
+  height: auto;
+  display: none; /* Hide images initially */
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.button {
+  display: flex; /* Ensure buttons are displayed in a flex container */
+  justify-content: center; /* Center buttons horizontally */
+  margin-top: 10px; /* Add some top margin for spacing */
 }
 .button.hide {
   display: none;
+}
+
+#winLooseImage {
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+  /* background-position: center; */
+  margin: 10px auto;
+  justify-items: center;
+}
+.winImage {
+  background-image: url("victory1.jpg");
+}
+.looseImage {
+  background-image: url("loose.jpg");
+}
+#deadImage {
+  background-image: url("Died.jpg");
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+  /* background-position: center; */
+  margin: 10px auto;
+}
+/* Enemy Images */
+.strongEnemy-1 {
+  background-image: url("strongmonster1.jpg");
+}
+.weakEnemy-1 {
+  background-image: url("weak.jpg");
+}
+/* Enemy Image Container */
+#enemyImage {
+  width: 200px; /* Adjust as needed */
+  height: 200px; /* Adjust as needed */
+  background-size: cover;
+  /* background-position: center; */
+  margin: 10px auto;
+}
+/* End of enemy images*/
+#deadImage {
+  width: 200px; /* Adjust as needed */
+  height: 200px; /* Adjust as needed */
+  background-size: cover;
+  margin: 10px auto;
+}
+.deadImage {
+  background-image: url("Died.jpg");
+}
+#trapImage {
+  width: 200px; /* Adjust as needed */
+  height: 200px; /* Adjust as needed */
+  background-size: cover;
+  margin: 10px auto;
+}
+.trapImage {
+  background-image: url("trap.jpg");
+}
+#potionImage {
+  width: 200px; /* Adjust as needed */
+  height: 200px; /* Adjust as needed */
+  background-size: cover;
+  margin: 10px auto;
+  display: none;
+}
+
+.potionImage {
+  background-image: url("pot.jpg");
 }

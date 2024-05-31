@@ -7,30 +7,55 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="board"></div>
-
-    <div id="die" class="die"></div>
-    <button id="rollButton">Roll</button>
-    <button id="restartButton">Restart</button>
-    <div id="playerStats">
-      <p>Health: <span id="playerHealth">100</span></p>
-      <p>Damage: <span id="playerDamage">10</span></p>
-      <p>Health Potions: <span id="healthPotions">0</span></p>
-      <button id="usePotionButton" class="button">Use Potion</button>
-    </div>
-
-    <div id="modalOverlay" class="modal-overlay">
-      <div class="modal">
-        <p id="eventText"></p>
-        <div class="modal-buttons">
-          <button id="nextButton" class="button hide">Next</button>
-          <button id="closeModalButton" class="button hide">Close</button>
-          <button id="yesButton" class="button hide">Yes</button>
-          <button id="noButton" class="button hide">No</button>
+    <div class="container">
+      <div class="interaction-space">
+        <div id="modalOverlay" class="modal-overlay">
+          <div class="modal">
+            <p id="eventText"></p>
+            <img id="enemyImage" class="modal-image" />
+            <img id="winLooseImage" class="modal-image" />
+            <img id="deadImage" class="modal-image" />
+            <img id="trapImage" class="modal-image" />
+            <img id="potionImage" class="potion-Image" />
+            <div class="modal-buttons" id="modalButtons">
+              <button id="nextButton" class="button hide">Next</button>
+              <button id="closeButton" class="button hide">Close</button>
+              <button id="yesButton" class="button hide">Yes</button>
+              <button id="restart" class="button hide">Restart?</button>
+              <button id="noButton" class="button hide">No</button>
+            </div>
+          </div>
+          <div id="overlay" class="overlay"></div>
+        </div>
+        <div class="stats">
+          <div id="die" class="die"></div>
+          <div class="buttons">
+            <button id="rollButton">Roll</button>
+            <button id="restartButton">Restart</button>
+          </div>
+          <div id="playerStats">
+            <p>Health: <span id="playerHealth">100</span></p>
+            <p>Damage: <span id="playerDamage">10</span></p>
+            <p>
+              Health Potions:
+              <img
+                id="healthPotionImage"
+                src="item_19.png"
+                alt="Health Potion"
+              />
+              <span id="healthPotions">0</span>
+            </p>
+            <button id="usePotionButton" class="button">Use Potion</button>
+          </div>
         </div>
       </div>
+      <div id="board" class="grid"></div>
     </div>
-
+    <audio id="BGM" src="BGM.mp3" loop="true"></audio>
+    <audio id="diceRoll" src="dice.mp3" loop="ye"></audio>
+    <audio id="walking">
+      <source src="walking.mp3" />
+    </audio>
     <script src="script.js"></script>
   </body>
 </html>

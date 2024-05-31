@@ -1,88 +1,148 @@
 // script.js
+let play = true;
+window.onclick = () => {
+  if (!play) return;
+  play = false;
+  const audioSource = new Audio("BGM.mp3");
+
+  audioSource.play();
+  audioSource.volume = 0.2;
+  audioSource.onended = () => {
+    play = true;
+  };
+};
+
+let stage = 1;
+let gridSize;
+let finishSquareIndex;
 
 document.addEventListener("DOMContentLoaded", () => {
   const board = document.getElementById("board");
-  const colors = ["dirt-brown", "sand"];
+  const colors = ["dirt-brown"];
   const startSquareIndex = 0; // First square as START section
-  const finishSquareIndex = 15; // Finish square
 
-  // Indices of the perimeter squares in a 5x5 grid
-  const perimeterIndices = [
-    0,
-    1,
-    2,
-    3,
-    4, // Top row
-    9,
-    14,
-    19, // Right column (excluding corners)
-    24,
-    23,
-    22,
-    21,
-    20, // Bottom row
-    15,
-    10,
-    5, // Left column (excluding corners)
-  ];
+  window.handleStage = function () {
+    if (stage === 1) {
+      gridSize = 5;
+      finishSquareIndex = 15;
+    } else if (stage === 2) {
+      gridSize = 6;
+      finishSquareIndex = 19;
+    } else if (stage === 3) {
+      gridSize = 7;
+      finishSquareIndex = 23;
+    } else if (stage === 4) {
+      gridSize = 8;
+      finishSquareIndex = 27;
+    } else if (stage === 5) {
+      gridSize = 9;
+      finishSquareIndex = 31;
+    } else if (stage === 6) {
+      gridSize = 10;
+      finishSquareIndex = 35;
+    } else if (stage === 7) {
+      gridSize = 11;
+      finishSquareIndex = 39;
+    }
+    console.log("Stage:", stage, "Grid Size:", gridSize);
+  };
 
-  // Rows and columns matching the perimeter indices
-  const positions = [
-    [1, 1],
-    [1, 2],
-    [1, 3],
-    [1, 4],
-    [1, 5], // Top row
-    [2, 5],
-    [3, 5],
-    [4, 5], // Right column
-    [5, 5],
-    [5, 4],
-    [5, 3],
-    [5, 2],
-    [5, 1], // Bottom row
-    [4, 1],
-    [3, 1],
-    [2, 1], // Left column
-  ];
+  function generateGrid() {
+    board.innerHTML = ""; // Clear existing grid
+    const perimeterIndices = [];
 
-  // Update the square creation loop to include random events
-  perimeterIndices.forEach((index, i) => {
-    const square = document.createElement("div");
-    square.classList.add("square");
-
-    if (i === startSquareIndex) {
-      square.classList.add("gravel-grey");
-      square.innerText = "START";
-    } else if (i === finishSquareIndex) {
-      square.classList.add("green");
-      square.innerText = "FINISH";
-      square.dataset.event = "FINISH"; //Assign the FINISH event
-    } else {
-      square.classList.add(colors[i % 2]);
-
-      // Set the grid position
-      const [row, col] = positions[i];
-      square.dataset.position = `${row}-${col}`; // Store the position data
-
-      // Hide the event text initially
-      square.innerText = "";
+    // Calculate perimeter indices for the grid
+    for (let i = 0; i < gridSize; i++) {
+      perimeterIndices.push(i);
+    }
+    for (let i = 1; i < gridSize - 1; i++) {
+      perimeterIndices.push(gridSize * i + (gridSize - 1));
+    }
+    for (let i = gridSize - 1; i >= 0; i--) {
+      perimeterIndices.push(gridSize * (gridSize - 1) + i);
+    }
+    for (let i = gridSize - 2; i > 0; i--) {
+      perimeterIndices.push(gridSize * i);
     }
 
-    // Set the grid position
-    const [row, col] = positions[i];
-    square.style.gridArea = `${row} / ${col} / span 1 / span 1`;
+    const positions = perimeterIndices.map((index) => {
+      let row, col;
 
-    // Set random events based on the square
-    const event = getRandomEvent();
-    square.dataset.event = event;
-    console.log("Assigned event:", event, "to square:", i);
-    board.appendChild(square);
-  });
+      if (index < gridSize) {
+        row = 1;
+        col = index + 1;
+      } else if (index >= gridSize * (gridSize - 1)) {
+        row = gridSize;
+        col = (index % gridSize) + 1;
+      } else {
+        col = index % gridSize === 0 ? 1 : gridSize;
+        row = Math.floor(index / gridSize) + 1;
+      }
+
+      return [row, col];
+    });
+
+    perimeterIndices.forEach((index, i) => {
+      const square = document.createElement("div");
+      square.classList.add("square");
+
+      if (i === startSquareIndex) {
+        square.classList.add("gravel-grey");
+        square.innerText = "START";
+      } else if (i === finishSquareIndex) {
+        square.classList.add("finishImage");
+        square.innerText = "FINISH";
+        square.dataset.event = "FINISH";
+      } else {
+        square.classList.add(colors[i % 1]);
+        const event = getRandomEvent();
+        square.dataset.event = event;
+      }
+
+      const [row, col] = positions[i];
+      square.style.gridArea = `${row} / ${col} / span 1 / span 1`;
+
+      window.continueGame = function () {
+        console.log("continueGame triggered");
+        eventModal("Welcome to Stage " + (stage + 1));
+        stage++;
+        console.log("After increment - Stage:", stage);
+        restartGame(); // Reset the game
+        handleStage();
+        generateGrid(); // Regenerate the grid when the stage changes
+
+        // Carry over player stats and items
+        document.getElementById("playerHealth").innerText = playerHealth;
+        document.getElementById("playerDamage").innerText = playerDamage;
+        document.getElementById("healthPotions").innerText = healthPotions;
+        console.log("Stage:", stage, "Grid Size:", gridSize);
+      };
+
+      board.appendChild(square);
+    });
+
+    board.style.setProperty("--grid-columns", gridSize);
+    board.style.setProperty("--grid-rows", gridSize);
+  }
+  handleStage();
+  generateGrid(); // Generate the initial grid
 
   //Creating the roll button
   const rollButton = document.getElementById("rollButton");
   rollButton.addEventListener("click", rollDie);
+  let play = true;
+
+  rollButton.onclick = () => {
+    if (!play) return;
+
+    play = false;
+    const audio = new Audio("dice.mp3");
+
+    audio.play();
+    audio.onended = () => {
+      play = true;
+    };
+  };
 
   //Creating restart button
   const restartButton = document.getElementById("restartButton");
@@ -96,10 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // Function to roll the die
 let currentPosition = 0; // Keep track of the current position
 let currentHighlightedPosition = 0; // Keep track of the currently highlighted position
-const finishSquareIndex = 15; // Finish square
 
 function rollDie() {
-  rollButton.removeEventListener("click", rollDie);
   const rollResult = Math.floor(Math.random() * 6) + 1; // Generate a random number between 1 and 6
   const die = document.getElementById("die");
 
@@ -115,8 +173,7 @@ function rollDie() {
 
   // After 2 seconds, display the final dot position and handle the event
   setTimeout(() => {
-    const newPosition = (currentPosition + rollResult) % 24; // Calculate new position based on roll result
-    console.log("new position", newPosition);
+    const newPosition = (currentPosition + rollResult) % 120; // Calculate new position based on roll result
 
     // Clear all previous highlights
     clearHighlight();
@@ -125,7 +182,6 @@ function rollDie() {
     highlightSequence(currentPosition, newPosition);
 
     currentPosition = newPosition; // Update current position
-    console.log("current Position", currentPosition);
     die.innerHTML = generateDieFace(rollResult); // Display final dot position
     console.log("Player rolled", rollResult);
 
@@ -151,7 +207,8 @@ function rollDie() {
   }, 2000);
 }
 
-function highlightSequence(startPosition, finalPosition) {
+function highlightSequence(startPosition, finalPosition, colors) {
+  document.getElementById("walking").play();
   const delay = 300; // Delay between each highlight (in milliseconds)
   let position = startPosition; // Start highlighting from the current position
 
@@ -162,7 +219,7 @@ function highlightSequence(startPosition, finalPosition) {
   // Start highlighting sequence
   const highlightInterval = setInterval(() => {
     if (position <= finalPosition) {
-      highlightSquare(position, true); // Highlight current position
+      highlightSquare(position, true, colors); // Highlight current position
       console.log("Highlighted square:", position);
       position++;
     } else {
@@ -171,20 +228,16 @@ function highlightSequence(startPosition, finalPosition) {
       // Clear border highlights from other squares when final position is reached
       clearBorderHighlights(finalPosition);
 
-      if (finalPosition >= finishSquareIndex) {
-        highlightSquare(finalPosition, true);
-      }
       // Handle the player position after highlighting sequence is complete
       setTimeout(() => {
         // Delay to ensure highlighting is complete
         handlePlayerPosition(finalPosition);
-        rollButton.addEventListener("click", rollDie);
 
         // Check if the player has reached or passed the FINISH square
         if (finalPosition >= finishSquareIndex) {
-          handleFinishEvent(); // Trigger FINISH event
+          handleFinishEvent();
         }
-      }, 100);
+      }, 100); // Adjust the delay as needed
     }
   }, delay);
 }
@@ -208,11 +261,24 @@ function clearBorderHighlights(finalPosition) {
 
 function highlightSquare(position, highlight) {
   const squares = document.querySelectorAll(".square");
+  const colors = ["dirt-brown"];
   squares[position].classList.toggle("highlight-border", highlight); // Add or remove border highlight class
   squares[position].classList.toggle(
     "highlight",
     position === currentPosition && highlight
   ); // Fully highlight the final square
+
+  // Toggle the appropriate color classes based on the current position
+  if (highlight && position === currentPosition) {
+    // Remove the color classes when the highlight is added
+    squares[position].classList.remove("dirt-brown");
+  } else {
+    // Add back the appropriate color class when the highlight is removed
+    if (position !== 0) {
+      const colors = ["dirt-brown"];
+      squares[position].classList.add(colors[position % 1]);
+    }
+  }
 }
 
 function generateDieFace(number) {
@@ -258,8 +324,14 @@ function restartGame() {
 
   // Remove highlight from the final square
   const squares = document.querySelectorAll(".square");
-  squares.forEach((square, index) => {
+  const colors = ["dirt-brown"];
+  const event = getRandomEvent();
+  squares.forEach((square, position) => {
     square.classList.remove("highlight");
+    square.classList.remove(square.dataset.event);
+    if (position !== 0 && position !== 39) {
+      square.classList.add(colors[position % 1]);
+    }
   });
 }
 
@@ -270,7 +342,7 @@ function getRandomEvent() {
     "HealthPotion", // Find a health potion
     // "Shop", // Visit a shop
     "Trap", // Fall into a trap
-    "Loot", // Finds Loot (currently just weapon)
+    //"Loot", // Finds Loot (currently just weapon)
     // "DefaultEvent", // Placeholder for a neutral event (optional)
   ];
   return events[Math.floor(Math.random() * events.length)];
@@ -279,6 +351,11 @@ function getRandomEvent() {
 let playerHealth = 100;
 let playerDamage = 10;
 let healthPotions = 0; // Track the number of health potions
+let enemyClass;
+let winLoose;
+let dead;
+let trap;
+let potion;
 
 document.getElementById("healthPotions").innerText = healthPotions; // Display number of health potions
 document.getElementById("playerDamage").innerText = playerDamage;
@@ -289,111 +366,98 @@ function updatePlayerHealth(newHealth) {
   console.log("playerHealth", playerHealth);
 }
 
-// Function to show the modal dialog with the event text and optional Next button
-function showModalWithNext(event, nextButtonCallback) {
-  const modalOverlay = document.getElementById("modalOverlay");
-  const eventText = document.getElementById("eventText");
-  let nextButton = document.getElementById("nextButton");
-  const closeModalButton = document.getElementById("closeModalButton");
-
-  eventText.innerText = event; // Update modal content with the event text
-  modalOverlay.style.display = "flex"; // Show the modal dialog
-
-  // If a callback function is provided for the Next button, add event listener
-  if (nextButtonCallback) {
-    nextButton.classList.add("show"); // Add a class to show the button
-    nextButton.classList.remove("hide"); // Remove the hide class
-    closeModalButton.classList.add("hide"); // Add a class to hide the button
-    closeModalButton.classList.remove("show"); // Remove the show class
-
-    // Remove any existing listeners before adding the new one to avoid multiple bindings
-    nextButton.replaceWith(nextButton.cloneNode(true));
-    nextButton = document.getElementById("nextButton");
-    nextButton.addEventListener("click", nextButtonCallback);
-  } else {
-    nextButton.classList.remove("show"); // Remove class to hide button
-    nextButton.classList.add("hide"); // Add the hide class
-    closeModalButton.classList.remove("hide"); // Remove the hide class
-    closeModalButton.classList.add("show"); // Add the show class
-  }
-}
-
-// Function to show the modal dialog with Yes and No buttons
-function showModalWithYesNo(event, yesCallback, noCallback) {
-  const modalOverlay = document.getElementById("modalOverlay");
-  const eventText = document.getElementById("eventText");
-  const yesButton = document.getElementById("yesButton");
-  const noButton = document.getElementById("noButton");
-  const closeModalButton = document.getElementById("closeModalButton");
-
-  eventText.innerText = event; // Update modal content with the event text
-  modalOverlay.style.display = "flex"; // Show the modal dialog
-
-  // Hide the close button
-  closeModalButton.classList.add("hide");
-  yesButton.classList.remove("hide");
-  noButton.classList.remove("hide");
-
-  // Remove any existing event listeners
-  yesButton.removeEventListener("click", yesCallback);
-  noButton.removeEventListener("click", noCallback);
-
-  // Add new event listeners
-  yesButton.addEventListener("click", () => {
-    yesButton.classList.add("hide");
-    noButton.classList.add("hide");
-    yesCallback();
-  });
-
-  noButton.addEventListener("click", () => {
-    yesButton.classList.add("hide");
-    noButton.classList.add("hide");
-    noCallback();
-  });
-}
-
 // Event handler for random events
 function handleEvent(event) {
   switch (event) {
     case "Enemy":
-      // Ensure enemy health is within the desired range (5 to 20)
+      // Ensure enemy health is within the desired range (5 to 15)
       const enemyStartingHealth = Math.floor(Math.random() * (15 - 5 + 1)) + 5; // Random between 5 and 20 (inclusive)
       const enemy = { health: enemyStartingHealth, damage: 5 };
+      const playerAttack = playerDamage; // Get player attack value
+      const enemyAttack = enemy.damage;
 
+      if (playerAttack > enemyStartingHealth) {
+        // If player attack is greater than enemy starting health, display a weak enemy
+        enemyClass = "weakEnemy-1";
+      } else {
+        // Otherwise, display a strong enemy
+        enemyClass = "strongEnemy-1";
+      }
+      console.log("Enemy Type:", enemyClass);
       // Show encounter message using modal with Next button for combat logic
-      showModalWithNext("You have encountered a monster!", handleCombatLogic);
+      enemyModal(
+        "You have encountered a monster!",
+        handleCombatLogic,
+        enemyClass
+      );
 
       function handleCombatLogic() {
         // Combat logic
-        const playerAttack = playerDamage; // Get player attack value
-        const enemyAttack = enemy.damage;
 
         // Ensure enemy health doesn't go negative before comparison (clamped to minimum of 0)
         enemy.health = Math.max(enemy.health - playerAttack, 0); // Enemy takes damage
 
         // Check who is stronger and show messages accordingly
         if (playerAttack > enemyStartingHealth) {
-          showModal("You are stronger and defeated the monster!");
-          // Add reward logic (optional)
+          winLoose = "winImage";
+          enemyClass = "none";
+          enemyModal(
+            "You defeated the monster successfully!",
+            null,
+            null,
+            winLoose
+          );
+          // Add reward logic
         } else {
           // Player takes damage, update health, and display updated value
           playerHealth = Math.max(playerHealth - enemyAttack, 0);
-          document.getElementById("playerHealth").innerText = playerHealth; // Update UI directly
-          showModal(
-            `The monster attacks you! Your health is now ${playerHealth}`
-          );
+          document.getElementById("playerHealth").innerText = playerHealth; // Updates UI directly
+          winLoose = "looseImage";
+          enemyClass = "none";
+          dead = "deadimage";
+
+          if (playerHealth <= 0) {
+            enemyModal("YOU ARE DEAD", null, null, null, dead);
+          } else {
+            enemyModal(
+              `The monster attacks you but you managed to escape! Your health is now ${playerHealth}`,
+              null,
+              null,
+              winLoose
+            );
+          }
         }
       }
       break;
     case "HealthPotion":
+      winLoose = "none";
+      enemyClass = "none";
+      dead = "none";
+      potion = "potionImage";
       if (playerHealth < 100) {
         playerHealth = Math.min(playerHealth + 10, 100); // Heal by 10, capped at 100
         document.getElementById("playerHealth").innerText = playerHealth;
-        showModal("Found a health potion! Health restored by 10.");
+        enemyModal(
+          "Found a health potion! Health restored by 10.",
+          null,
+          null,
+          null,
+          null,
+          null,
+          potion
+        );
       } else {
         healthPotions++; // Store the potion if health is full
         document.getElementById("healthPotions").innerText = healthPotions;
-        showModal("Found a health potion! Saved for later use.");
+        enemyModal(
+          "Found a health potion! Saved for later use.",
+          null,
+          null,
+          null,
+          null,
+          null,
+          potion
+        );
       }
       break;
     // case "Shop":
@@ -408,86 +472,83 @@ function handleEvent(event) {
       playerHealth = Math.max(playerHealth - trapDamage, 0); // Player takes damage
       document.getElementById("playerHealth").innerText = playerHealth; // Update UI directly
       console.log("Player Health after Trap (UI):", playerHealth);
+      dead = "deadImage";
+      trap = "trapImage";
 
-      showModal(
-        `Fell into a trap! Took ${trapDamage} damage. Your health is now ${playerHealth}`
-      );
+      if (playerHealth <= 0) {
+        enemyModal("YOU ARE DEAD", null, null, null, dead);
+      } else {
+        enemyModal(
+          `Fell into a trap! Took ${trapDamage} damage. Your health is now ${playerHealth}`,
+          null,
+          null,
+          null,
+          null,
+          trap
+        );
+      }
       break;
     case "Loot":
       const damageIncrease = Math.floor(Math.random() * 10) + 1; // Random increase between 1 and 10
       playerDamage += damageIncrease;
       document.getElementById("playerDamage").innerText = playerDamage;
-      showModal(
+      eventModal(
         `You found a weapon! Your damage increased by ${damageIncrease}.`
       );
       break;
     case "DefaultEvent":
       // Handle the default event (optional)
-      showModal("Something interesting happened...");
+      eventModal("Something interesting happened...");
       break;
   }
 }
-
-// Confirm use of potion
-function confirmUsePotion() {
-  if (healthPotions > 0) {
-    showModalWithYesNo("Use Potion?", usePotion, keepPotion);
-  } else {
-    showModal("No potions available!");
-  }
-}
-
 // Use a stored health potion
 function usePotion() {
   playerHealth = Math.min(playerHealth + 10, 100);
   healthPotions--;
   document.getElementById("playerHealth").innerText = playerHealth;
   document.getElementById("healthPotions").innerText = healthPotions;
-  showModal("Health restored by 10.");
+  eventModal("Health restored by 10.");
 }
-
 // Confirm use of potion
 function confirmUsePotion() {
+  winLoose = "none";
+  enemyClass = "none";
+  dead = "none";
+  potion = "potionImage";
   if (healthPotions > 0) {
     if (playerHealth < 100) {
-      showModalWithYesNo("Use Potion?", usePotion, keepPotion);
+      yesNoModal("Use Potion?", usePotion, keepPotion);
     } else {
-      showModal("You are at full health and cannot use the potion.");
+      enemyModal(
+        "You are at full health and cannot use the potion.",
+        null,
+        null,
+        null,
+        null,
+        null,
+        potion
+      );
     }
   } else {
-    showModal("No potions available!");
+    enemyModal("No potions available!", null, null, null, null, null, potion);
   }
 }
-
 // Keep the potion and close modal
 function keepPotion() {
-  showModal("You kept the potion back.");
+  eventModal("You kept the potion back.");
 }
-
-// Function to show the modal dialog
-function showModal(event) {
-  const modalOverlay = document.getElementById("modalOverlay");
-  const eventText = document.getElementById("eventText");
-  const closeModalButton = document.getElementById("closeModalButton");
-  const nextButton = document.getElementById("nextButton");
-
-  eventText.innerText = event; // Update modal content with the event text
-  modalOverlay.style.display = "flex"; // Show the modal dialog
-  closeModalButton.classList.add("show");
-  closeModalButton.classList.remove("hide");
-  nextButton.classList.remove("show"); // Hide the Next button
-  nextButton.classList.add("hide"); // Ensure the hide class is added
-}
-
 // Function to hide the modal dialog
 function hideModal() {
-  const modalOverlay = document.getElementById("modalOverlay");
-  modalOverlay.style.display = "none"; // Hide the modal dialog
+  const modal = document.querySelector(".modal");
+  const overlay = document.querySelector(".overlay");
+  modal.style.display = "none"; // Hide the modal dialog
+  overlay.style.display = "none";
 }
 
 // Event listener for the close button
-const closeModalButton = document.getElementById("closeModalButton");
-closeModalButton.addEventListener("click", hideModal);
+const closeButton = document.getElementById("closeButton");
+closeButton.addEventListener("click", hideModal);
 
 function handlePlayerPosition(finalPosition) {
   const playerPosition = document.querySelector(".highlight"); // Get the player's current position
@@ -507,34 +568,154 @@ function handlePlayerPosition(finalPosition) {
     console.log("Player Position not found!");
   }
 }
-
 function handleFinishEvent() {
-  showModalWithYesNo(
-    "Congratulations! You survived! Continue?",
+  yesNoModal(
+    "Congratulations! You survived the floor! Continue?",
     continueGame,
     endGame
   );
 }
-
-function continueGame() {
-  restartGame(); // Reset the game
-
-  // Carry over player stats and items
-  document.getElementById("playerHealth").innerText = playerHealth;
-  document.getElementById("playerDamage").innerText = playerDamage;
-  document.getElementById("healthPotions").innerText = healthPotions;
-
-  // Show a message confirming game continuation
-  showModalWithYesNo("Are you sure?", continueGameConfirmed, endGame);
-}
-
 // Function to continue the game after confirmation
 function continueGameConfirmed() {
-  showModal("Game continued! Good luck!");
+  eventModal("Game continued! Good luck!");
 }
-
 // Function to end the game and show a thank you message
 function endGame() {
   restartGame(); // Reset the game
-  showModal("Thank you for playing!");
+  eventModal("Thank you for playing!");
+  hideModal();
+}
+function nextModal(event, next) {
+  const overlay = document.querySelector(".overlay");
+  const modal = document.querySelector(".modal");
+  const eventText = document.getElementById("eventText");
+  let nextButton = document.getElementById("nextButton");
+  const closeButton = document.getElementById("closeButton");
+
+  eventText.innerText = event;
+  overlay.style.display = "flex";
+  modal.style.display = "flex";
+
+  if (next) {
+    nextButton.classList.add("show");
+    nextButton.classList.remove("hide");
+    nextButton.addEventListener("click", next);
+  } else {
+    nextButton.classList.remove("show");
+    nextButton.classList.add("hide");
+    closeButton.classList.add("show");
+    closeButton.classList.remove("hide");
+  }
+}
+function yesNoModal(event, yes, no) {
+  const modal = document.querySelector(".modal");
+  const overlay = document.querySelector(".overlay");
+  const eventText = document.getElementById("eventText");
+  const yesButton = document.getElementById("yesButton");
+  const noButton = document.getElementById("noButton");
+  const closeButton = document.getElementById("closeButton");
+
+  eventText.innerHTML = event;
+  overlay.style.display = "flex";
+  modal.style.display = "flex";
+  yesButton.classList.remove("hide");
+  noButton.classList.remove("hide");
+  closeButton.classList.add("hide");
+
+  // Define the handlers
+  function handleYes() {
+    yesButton.removeEventListener("click", handleYes);
+    noButton.removeEventListener("click", handleNo);
+    yesButton.classList.add("hide");
+    noButton.classList.add("hide");
+    modal.style.display = "none";
+    yes();
+  }
+
+  function handleNo() {
+    yesButton.removeEventListener("click", handleYes);
+    noButton.removeEventListener("click", handleNo);
+    yesButton.classList.add("hide");
+    noButton.classList.add("hide");
+    modal.style.display = "none";
+    no();
+  }
+
+  // Attach the event listeners
+  yesButton.addEventListener("click", handleYes);
+  noButton.addEventListener("click", handleNo);
+}
+function eventModal(event) {
+  const overlay = document.querySelector(".overlay");
+  const modal = document.querySelector(".modal");
+  const eventText = document.getElementById("eventText");
+  const closeButton = document.getElementById("closeButton");
+  eventText.innerHTML = event;
+  overlay.style.display = "flex";
+  modal.style.display = "flex";
+
+  closeButton.classList.remove("hide");
+  closeButton.classList.add("show");
+}
+function enemyModal(event, next, enemyClass, winLoose, dead, trap, potion) {
+  const overlay = document.querySelector(".overlay");
+  const modal = document.querySelector(".modal");
+  const elements = {
+    eventText: document.getElementById("eventText"),
+    nextButton: document.getElementById("nextButton"),
+    closeButton: document.getElementById("closeButton"),
+    enemyImage: document.getElementById("enemyImage"),
+    winLooseImage: document.getElementById("winLooseImage"),
+    restartButton: document.getElementById("restart"),
+    deadImage: document.getElementById("deadImage"),
+    trapImage: document.getElementById("trapImage"),
+    potionImage: document.getElementById("potionImage"),
+  };
+
+  elements.eventText.innerText = event;
+  overlay.style.display = "flex";
+  modal.style.display = "flex";
+
+  const images = [
+    elements.enemyImage,
+    elements.winLooseImage,
+    elements.deadImage,
+    elements.trapImage,
+    elements.potionImage,
+  ];
+  images.forEach((img) => (img.style.display = "none"));
+
+  if (enemyClass) {
+    elements.enemyImage.className = enemyClass;
+    elements.enemyImage.style.display = "block";
+    elements.closeButton.classList.add("hide");
+  } else if (winLoose) {
+    elements.winLooseImage.className = winLoose;
+    elements.winLooseImage.style.display = "block";
+    elements.nextButton.classList.remove("show");
+    elements.closeButton.classList.add("show");
+  } else if (dead) {
+    elements.deadImage.className = dead;
+    elements.deadImage.style.display = "block";
+    elements.restartButton.classList.add("show");
+    elements.restartButton.addEventListener("click", endGame);
+    elements.closeButton.classList.add("hide");
+  } else if (trap) {
+    elements.trapImage.className = trap;
+    elements.trapImage.style.display = "block";
+  } else if (potion) {
+    elements.potionImage.className = potion;
+    elements.potionImage.style.display = "block";
+  }
+
+  if (next) {
+    nextButton.classList.add("show");
+    nextButton.classList.remove("hide");
+    nextButton.addEventListener("click", next);
+  } else {
+    nextButton.classList.remove("show");
+    nextButton.classList.add("hide");
+    closeButton.classList.add("show");
+    closeButton.classList.remove("hide");
+  }
 }
