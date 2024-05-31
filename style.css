@@ -7,7 +7,6 @@ body {
   color: black;
   /* background-color: black; */
 }
-
 /* Container styles */
 .container {
   display: flex;
@@ -34,7 +33,7 @@ body {
   grid-template-rows: repeat(var(--grid-rows, 5), 1fr);
   gap: 5px;
   /* padding: 10px; */
-  background-image: url("board.png");
+  background-image: url("Images/board.png");
   transition: grid-template-columns 0.5s, grid-template-rows 0.5s;
 }
 
@@ -51,18 +50,18 @@ body {
 /* Colours for certain tiles */
 
 .dirt-brown {
-  background-image: url("tile1.jpg");
+  background-image: url("Images/tile1.jpg");
   background-size: cover;
   filter: brightness(50%);
 }
 
 .gravel-grey {
-  background-image: url("start.png");
+  background-image: url("Images/start.png");
   background-size: cover;
 }
 
 .finishImage {
-  background-image: url("finish.png");
+  background-image: url("Images/finish.png");
   background-size: contain;
 }
 
@@ -85,7 +84,7 @@ body {
   background-color: darkblue;
 }
 .highlight {
-  background-image: url("tile1.jpg");
+  background-image: url("Images/tile1.jpg");
   background-size: cover;
   z-index: 1;
 }
@@ -104,7 +103,7 @@ body {
   align-items: center; /* Center items horizontally */
   padding: 10px;
   color: white;
-  background-image: url("tileno.jpg");
+  background-image: url("Images/tileno.jpg");
 }
 
 /* start of Di(c)e */
@@ -220,7 +219,8 @@ body {
   display: hidden;
   justify-content: center;
   align-items: center;
-  background-color: black;
+  background-image: url("Images/modalBG.jpg");
+  background-size: cover;
   border-bottom: 1px solid black;
   position: relative;
 }
@@ -266,13 +266,12 @@ body {
   justify-items: center;
 }
 .winImage {
-  background-image: url("victory1.jpg");
+  background-image: url("Images/win1.png");
 }
 .looseImage {
-  background-image: url("loose.jpg");
+  background-image: url("Images/loose.jpg");
 }
 #deadImage {
-  background-image: url("Died.jpg");
   width: 200px;
   height: 200px;
   background-size: cover;
@@ -281,17 +280,16 @@ body {
 }
 /* Enemy Images */
 .strongEnemy-1 {
-  background-image: url("strongmonster1.jpg");
+  background-image: url("Images/strongmonster1.jpg");
 }
 .weakEnemy-1 {
-  background-image: url("weak.jpg");
+  background-image: url("Images/weak.jpg");
 }
 /* Enemy Image Container */
 #enemyImage {
   width: 200px; /* Adjust as needed */
   height: 200px; /* Adjust as needed */
   background-size: cover;
-  /* background-position: center; */
   margin: 10px auto;
 }
 /* End of enemy images*/
@@ -302,7 +300,7 @@ body {
   margin: 10px auto;
 }
 .deadImage {
-  background-image: url("Died.jpg");
+  background-image: url("Images/Died.jpg");
 }
 #trapImage {
   width: 200px; /* Adjust as needed */
@@ -311,7 +309,7 @@ body {
   margin: 10px auto;
 }
 .trapImage {
-  background-image: url("trap.jpg");
+  background-image: url("Images/trap.jpg");
 }
 #potionImage {
   width: 200px; /* Adjust as needed */
@@ -322,5 +320,17 @@ body {
 }
 
 .potionImage {
-  background-image: url("pot.jpg");
+  background-image: url("Images/pot.jpg");
+}
+
+#choiceImage {
+  width: 200px; /* Adjust as needed */
+  height: 200px; /* Adjust as needed */
+  background-size: cover;
+  margin: 10px auto;
+  display: none;
+}
+
+.choiceImage {
+  background-image: url("Images/continue.png");
 }
