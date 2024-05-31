@@ -359,6 +359,7 @@ let winLoose;
 let dead;
 let trap;
 let potion;
+let weapon;
 
 document.getElementById("healthPotions").innerText = healthPotions; // Display number of health potions
 document.getElementById("playerDamage").innerText = playerDamage;
@@ -490,11 +491,14 @@ function handleEvent(event) {
 
     case "Loot":
       const damageIncrease = Math.floor(Math.random() * 10) + 1; // Random increase between 1 and 10
+      const weapon = "weaponImage";
       playerDamage += damageIncrease;
       document.getElementById("playerDamage").innerText = playerDamage;
-      eventModal(
-        `You found a weapon! Your damage increased by ${damageIncrease}.`
-      );
+      showModal({
+        type: "enemy",
+        event: `You found a weapon! Your damage increased by ${damageIncrease}.`,
+        weapon: weapon,
+      });
       break;
     case "DefaultEvent":
       // Handle the default event (optional)
@@ -639,6 +643,7 @@ function showModal({
   yes = null,
   no = null,
   choice = null,
+  weapon = null,
 }) {
   const overlay = document.querySelector(".overlay");
   const modal = document.querySelector(".modal");
@@ -655,6 +660,7 @@ function showModal({
     yesButton: document.getElementById("yesButton"),
     noButton: document.getElementById("noButton"),
     choiceImage: document.getElementById("choiceImage"),
+    weaponImage: document.getElementById("weaponImage"),
   };
 
   elements.eventText.innerText = event;
@@ -668,6 +674,7 @@ function showModal({
     elements.trapImage,
     elements.potionImage,
     elements.choiceImage,
+    elements.weaponImage,
   ];
   images.forEach((img) => (img.style.display = "none"));
 
@@ -693,6 +700,9 @@ function showModal({
     } else if (potion) {
       elements.potionImage.className = potion;
       elements.potionImage.style.display = "block";
+    } else if (weapon) {
+      elements.weaponImage.className = weapon;
+      elements.weaponImage.style.display = "block";
     }
 
     if (next) {

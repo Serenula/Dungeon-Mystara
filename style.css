@@ -334,3 +334,15 @@ body {
 .choiceImage {
   background-image: url("Images/continue.png");
 }
+
+#weaponImage {
+  width: 200px; /* Adjust as needed */
+  height: 200px; /* Adjust as needed */
+  background-size: cover;
+  margin: 10px auto;
+  display: none;
+}
+
+.weaponImage {
+  background-image: url("Images/loot.jpg");
+}
