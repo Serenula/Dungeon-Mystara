@@ -159,6 +159,7 @@ let currentPosition = 0; // Keep track of the current position
 let currentHighlightedPosition = 0; // Keep track of the currently highlighted position
 
 function rollDie() {
+  rollButton.removeEventListener("click", rollDie);
   const rollResult = Math.floor(Math.random() * 6) + 1; // Generate a random number between 1 and 6
   const die = document.getElementById("die");
 
@@ -235,6 +236,7 @@ function highlightSequence(startPosition, finalPosition, colors) {
       setTimeout(() => {
         // Delay to ensure highlighting is complete
         handlePlayerPosition(finalPosition);
+        rollButton.addEventListener("click", rollDie);
 
         // Check if the player has reached or passed the FINISH square
         if (finalPosition >= finishSquareIndex) {
