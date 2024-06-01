@@ -33,7 +33,7 @@ body {
   grid-template-rows: repeat(var(--grid-rows, 5), 1fr);
   gap: 5px;
   /* padding: 10px; */
-  background-image: url("Images/board.png");
+  background-image: url("Images/board.jpg");
   transition: grid-template-columns 0.5s, grid-template-rows 0.5s;
 }
 
