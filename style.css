@@ -86,7 +86,8 @@ body {
 }
 
 #rollButton:hover {
-  background-color: darkblue;
+  background-color: goldenrod;
+  color: black;
 }
 .highlight {
   background-image: url("Images/tile1.jpg");
@@ -159,7 +160,8 @@ body {
 }
 
 #restartButton:hover {
-  background-color: darkgreen;
+  background-color: darkred;
+  color: black;
 }
 /* Player stats section */
 #playerStats {
@@ -199,7 +201,8 @@ body {
 }
 
 #usePotionButton:hover {
-  background-color: #0056b3; /* Darker shade of blue on hover */
+  background-color: white; /* Darker shade of blue on hover */
+  color: darkred;
 }
 
 /* Modal overlay styles */
@@ -241,6 +244,7 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 2;
+  font-size: 20px;
 }
 
 .modal-image {
@@ -258,6 +262,10 @@ body {
   display: flex; /* Ensure buttons are displayed in a flex container */
   justify-content: center; /* Center buttons horizontally */
   margin-top: 10px; /* Add some top margin for spacing */
+  background-color: black;
+  color: red;
+  padding: 10px 10px;
+  border-radius: 10px;
 }
 .button.hide {
   display: none;
