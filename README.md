@@ -1,5 +1,46 @@
 # ProjectOne
 
+Link to game : https://serenula.github.io/ProjectOne/
+
+## About my game:
+
+Title: Dungeon Mystara
+
+Prologue:
+In a distant world where dungeons and demons were part of life, every person must go through a ritualistic coming-of-age ceremony. Only upon survival will the challenger be ever consider an adult. Today is your day, your chance for glory, you turn to enter, Dungeon Mystara.
+
+Gameplay:
+Dungeon Mystara is a boardgame styled dice roll game where the player will roll a single die and progress through the board. Each square present random events such as monster, loot, health and traps. Stage one starts at the smallest board of 5x5 and can progress to stage 7 at the largest board size of 11x11.
+
+- Win condition: The player must reach the last square on the board without dying
+- Loose coniditon: The player dies before reaching the last square on the board.
+
+Main goal (MVP):
+
+1. Create a board of at grid size 5x5 where only the perimeter is used
+2. Create the movemment logic, where the player moves based on the results on the dice roll
+3. Create the win conditon where the player reaches or the roll results passes the finish square
+4. Create at least 2 event and allocate them randomly to each square
+
+Stretch goal:
+
+1. Create stages where each stage is bigger than the previous stage starting at
+   - Stage 1: 5x5
+   - Stage 2: 6x6
+   - Stage 3: 7x7
+   - Stage 4: 8x8
+   - Stage 5: 9x9
+   - Stage 6: 10x10
+   - Final Stage: 11x11
+2. Add more events the event randomizer
+
+Future goals (Maybe):
+
+1. Instead of a script based battle resolution where the player does not really do anyting, I want to add something similar to the battle system of pokemon. Where the player and monster takes turns to attack and the player has options such as "Attack", "Defend", "Escape"
+2. I wanted to actually add monster progression but I struggled with it. Each time the player progresses in the game, the monster should get harder and also, look different
+3. Boss battle at the finish square.
+4. Shops, reward such as cash, different loot types such as armor
+
 ## In the beginning
 
 1. Created a event listener → DOM content loaded to ensure that my script runs after the DOM is fully loaded
@@ -299,7 +340,203 @@
 - However, as my thought processes are not in a straight line… I have many different modals for different requirements such as
   - Yes and No
   - Next
+- Here is the code for my largest modal.
+
+```
+function showModal({
+  type,
+  event,
+  next = null,
+  enemyClass = null,
+  winLoose = null,
+  dead = null,
+  trap = null,
+  potion = null,
+  yes = null,
+  no = null,
+  choice = null,
+  weapon = null,
+}) {
+  const overlay = document.querySelector(".overlay");
+  const modal = document.querySelector(".modal");
+  const elements = {
+    eventText: document.getElementById("eventText"),
+    nextButton: document.getElementById("nextButton"),
+    closeButton: document.getElementById("closeButton"),
+    enemyImage: document.getElementById("enemyImage"),
+    winLooseImage: document.getElementById("winLooseImage"),
+    restartButton: document.getElementById("restart"),
+    deadImage: document.getElementById("deadImage"),
+    trapImage: document.getElementById("trapImage"),
+    potionImage: document.getElementById("potionImage"),
+    yesButton: document.getElementById("yesButton"),
+    noButton: document.getElementById("noButton"),
+    choiceImage: document.getElementById("choiceImage"),
+    weaponImage: document.getElementById("weaponImage"),
+  };
+
+  elements.eventText.innerText = event;
+  overlay.style.display = "flex";
+  modal.style.display = "flex";
+
+  const images = [
+    elements.enemyImage,
+    elements.winLooseImage,
+    elements.deadImage,
+    elements.trapImage,
+    elements.potionImage,
+    elements.choiceImage,
+    elements.weaponImage,
+  ];
+  images.forEach((img) => (img.style.display = "none"));
+
+  if (type === "enemy") {
+    if (enemyClass) {
+      elements.enemyImage.className = enemyClass;
+      elements.enemyImage.style.display = "block";
+      elements.closeButton.classList.add("hide");
+    } else if (winLoose) {
+      elements.winLooseImage.className = winLoose;
+      elements.winLooseImage.style.display = "block";
+      elements.nextButton.classList.remove("show");
+      elements.closeButton.classList.add("show");
+    } else if (dead) {
+      elements.deadImage.className = dead;
+      elements.deadImage.style.display = "block";
+      elements.restartButton.classList.add("show");
+      elements.restartButton.addEventListener("click", endGame);
+      elements.closeButton.classList.add("hide");
+    } else if (trap) {
+      elements.trapImage.className = trap;
+      elements.trapImage.style.display = "block";
+    } else if (potion) {
+      elements.potionImage.className = potion;
+      elements.potionImage.style.display = "block";
+    } else if (weapon) {
+      elements.weaponImage.className = weapon;
+      elements.weaponImage.style.display = "block";
+    }
+
+    if (next) {
+      elements.nextButton.classList.add("show");
+      elements.nextButton.classList.remove("hide");
+      elements.nextButton.addEventListener("click", next);
+    } else {
+      elements.nextButton.classList.remove("show");
+      elements.nextButton.classList.add("hide");
+      elements.closeButton.classList.add("show");
+      elements.closeButton.classList.remove("hide");
+    }
+  } else if (type === "yesNo") {
+    elements.yesButton.classList.remove("hide");
+    elements.noButton.classList.remove("hide");
+    elements.closeButton.classList.add("hide");
+
+    function handleYes() {
+      elements.yesButton.removeEventListener("click", handleYes);
+      elements.noButton.removeEventListener("click", handleNo);
+      elements.yesButton.classList.add("hide");
+      elements.noButton.classList.add("hide");
+      modal.style.display = "none";
+      yes();
+    }
+
+    function handleNo() {
+      elements.yesButton.removeEventListener("click", handleYes);
+      elements.noButton.removeEventListener("click", handleNo);
+      elements.yesButton.classList.add("hide");
+      elements.noButton.classList.add("hide");
+      modal.style.display = "none";
+      no();
+    }
+
+    elements.yesButton.addEventListener("click", handleYes);
+    elements.noButton.addEventListener("click", handleNo);
+
+    if (choice) {
+      elements.choiceImage.className = choice;
+      elements.choiceImage.style.display = "block";
+    }
+    if (potion) {
+      elements.potionImage.className = potion;
+      elements.potionImage.style.display = "block";
+    }
+  }
+}
 
 ```
 
-```
+## Phase 2 - updates to the code
+
+### Board
+
+As the game started simply as a 5 x 5 board, I quickly found that the game ended too fast. Upon checking, monopoly has a board of 11x11, so I set out to increase my playing field. To my dismay, I was manually counting and plotting all the indices and row/column one by one, which got me thinking of how do I do this faster and better. The answer was loops
+
+- I first declare the gridSize of the game. This one simple line will give me full control over the total number of squares
+- Generating the perimeter indices
+  - As there were 4 sections to the board, 4 loops were required
+  ```
+  //Top row
+  for (let i = 0; i < gridSize; i++) {
+      perimeterIndices.push(i);
+    }
+    // Right column (excluding corners)
+    for (let i = 1; i < gridSize - 1; i++) {
+      perimeterIndices.push(gridSize * i + (gridSize - 1));
+    }
+    // Bottom row
+    for (let i = gridSize - 1; i >= 0; i--) {
+      perimeterIndices.push(gridSize * (gridSize - 1) + i);
+    }
+    // Left column (excluding corners)
+    for (let i = gridSize - 2; i > 0; i--) {
+      perimeterIndices.push(gridSize * i);
+    }
+  ```
+  - So. Much. Math.
+  - I made it so that the top and bottom rows will have the full length of squares so I needed to ensure I removed 2 squares from the left and right columns. The for loop will go through 9 “rows’ to give back those sweet sweet index numbers.
+- Mapping the indices to their positions
+
+  - Now that the indices are planned out, controlling the board’s shape, I will now need to map them to their relevant row and column
+
+    ```
+    const positions = perimeterIndices.map((index) => {
+        let row, col;
+
+        if (index < gridSize) {
+          // Top row
+          row = 1;
+          col = index + 1;
+        } else if (index >= gridSize * (gridSize - 1)) {
+          // Bottom row
+          row = gridSize;
+          col = (index % gridSize) + 1;
+        } else {
+          // Left and right columns
+          col = index % gridSize === 0 ? 1 : gridSize;
+          row = Math.floor(index / gridSize) + 1;
+        }
+
+        return [row, col];
+    ```
+
+    - now the tricky one was left and right columns where a ternary condition helped determining if the the column is 1 or not, where 1 = left as 0/11 = 0 column and 0 = right as 11/11 = column 11
+      - The row part as the corners are not counted, start from 1 instead of 0 thus the + 1
+
+- Making CSS follow suit
+  ```
+    // Set CSS custom properties for grid size
+    board.style.setProperty("--grid-columns", gridSize);
+    board.style.setProperty("--grid-rows", gridSize);
+  ```
+  ```css
+  grid-auto-columns: calc(100% / var(--grid-columns));
+  grid-auto-rows: calc(100% / var(--grid-rows));
+  ```
+  - These codes now allow my board to just be based on the gridsize
+  - I set the size to 100% for now as I am still unsure of how to modify it
+
+### Roll Dice
+
+- For the longest time, I did not realise that the dice could be spam clicked and caused the game to mess up.
+- The simple fix was to remove the event listener when rollDice is activated and to add it back once the movement is completed. Somehow, this stumped me for 2 hours
