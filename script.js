@@ -237,6 +237,8 @@ function highlightSequence(startPosition, finalPosition, colors) {
         // Delay to ensure highlighting is complete
         handlePlayerPosition(finalPosition);
         rollButton.addEventListener("click", rollDie);
+        walkingAudio.pause();
+        walkingAudio.currentTime = 0;
 
         // Check if the player has reached or passed the FINISH square
         if (finalPosition >= finishSquareIndex) {
