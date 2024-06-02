@@ -1,5 +1,6 @@
 # ProjectOne
 
+![Intro Page](Images/Home.jpg)
 Link to game : https://serenula.github.io/ProjectOne/
 
 ## About my game:
@@ -116,6 +117,7 @@ Future goals (Maybe):
       ```
 
    3. Colouring the squares
+      ![First look at my board](<First Rendition.png>)
 
       1. Using an If else loop, I determine where START and FINISH is and for the other squares that are not either one of those, they will receive colour in alternating fashion via i % 2
 
@@ -466,10 +468,11 @@ function showModal({
 
 ```
 
-## Phase 2 - updates to the code
+## Stretch Goals - updates to the code
 
 ### Board
 
+![2nd rendition of board](<Second Rendtion.png>)
 As the game started simply as a 5 x 5 board, I quickly found that the game ended too fast. Upon checking, monopoly has a board of 11x11, so I set out to increase my playing field. To my dismay, I was manually counting and plotting all the indices and row/column one by one, which got me thinking of how do I do this faster and better. The answer was loops
 
 - I first declare the gridSize of the game. This one simple line will give me full control over the total number of squares
@@ -540,3 +543,36 @@ As the game started simply as a 5 x 5 board, I quickly found that the game ended
 
 - For the longest time, I did not realise that the dice could be spam clicked and caused the game to mess up.
 - The simple fix was to remove the event listener when rollDice is activated and to add it back once the movement is completed. Somehow, this stumped me for 2 hours
+
+### Stage Progression
+
+- After updating the code make changing the board size easier, I went on to try to make what I deemed as "Stage Progression" where with each stage completed, the subsequent stage will have a bigger board.
+- I struggle coming out with the formula to calculate where FinishSquareIndex will always be when the board increase. Why? Heres why.. At stage 1, the grid is 5x5 and the finish square sits at a nice index of 15, so you may think, its a simple gridSize X gridSize, thats where you are wrong. Because 6x6 = 36 but the finish square is at 19. So in the end, there is no formula
+  ![Counting Squares](<Counting Squares.png>)
+  in the end, I had to manually code it out...
+  ```
+   window.handleStage = function () {
+    if (stage === 1) {
+      gridSize = 5;
+      finishSquareIndex = 15;
+    } else if (stage === 2) {
+      gridSize = 6;
+      finishSquareIndex = 19;
+    } else if (stage === 3) {
+      gridSize = 7;
+      finishSquareIndex = 23;
+    } else if (stage === 4) {
+      gridSize = 8;
+      finishSquareIndex = 27;
+    } else if (stage === 5) {
+      gridSize = 9;
+      finishSquareIndex = 31;
+    } else if (stage === 6) {
+      gridSize = 10;
+      finishSquareIndex = 35;
+    } else if (stage === 7) {
+      gridSize = 11;
+      finishSquareIndex = 39;
+    }
+  ```
+  - Due to some global function access issues, I was force to learn about window. which allowed me to make handleStage a global function.
