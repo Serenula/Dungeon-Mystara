@@ -44,13 +44,9 @@ Future goals (Maybe):
 
 ## In the beginning
 
-1. Created a event listener → DOM content loaded to ensure that my script runs after the DOM is fully loaded
-   1. board
-   2. colours for the square
-   3. start square
-      1. declared it as always index 0
-   4. finish square
-      1. declared it as final index of the flow of the game. Currently set at 15
+![Wireframe](<Wireframe - 1.png>)
+
+1. As you can see from my wireframe what I have envision for the game. With that said, I set out to start creating the 3 main files, HTML, CSS and Javascript and I started it with...
 
 ## Creation of Board
 
