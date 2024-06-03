@@ -118,6 +118,7 @@ Future goals (Maybe):
 
    3. Colouring the squares
       ![First look at my board](<First Rendition.png>)
+      ![highlighting squares and random events](highlightsquares.gif)
 
       1. Using an If else loop, I determine where START and FINISH is and for the other squares that are not either one of those, they will receive colour in alternating fashion via i % 2
 
