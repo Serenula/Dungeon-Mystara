@@ -1,7 +1,7 @@
 # ProjectOne
 
 ![Intro Page](Images/Home.jpg)
-Link to game : https://serenula.github.io/ProjectOne/
+[Link to game : ](https://serenula.github.io/Dungeon-Mystara/)
 
 ## About my game:
 
